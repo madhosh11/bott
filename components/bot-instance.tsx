@@ -41,12 +41,12 @@ export function BotInstance({ bot, onClose, onRefresh }: BotInstanceProps) {
 
   return (
     <Card
-      className={`bg-zinc-900 border-red-900/50 overflow-hidden transition-all ${
-        isFullscreen ? "fixed inset-4 z-50" : "aspect-video"
+      className={`bg-zinc-900 border-red-900/50 overflow-hidden transition-all flex flex-col ${
+        isFullscreen ? "fixed inset-4 z-50" : "min-h-80"
       }`}
     >
       {/* Title bar */}
-      <div className="bg-black/80 border-b border-red-900/50 px-3 py-2 flex items-center justify-between">
+      <div className="bg-black/80 border-b border-red-900/50 px-3 py-2 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xs font-semibold text-white">{getBotName()}</span>
           <div className="flex items-center gap-2 text-xs">
@@ -87,8 +87,8 @@ export function BotInstance({ bot, onClose, onRefresh }: BotInstanceProps) {
       </div>
 
       <div
-        className="relative bg-zinc-950 flex items-center justify-center"
-        style={{ height: isFullscreen ? "calc(100vh - 8rem - 48px)" : "200px" }}
+        className="relative bg-zinc-950 flex items-center justify-center flex-1 overflow-hidden"
+        style={{ minHeight: isFullscreen ? "calc(100vh - 8rem - 48px)" : "300px" }}
       >
         {bot.screenshot ? (
           <img
