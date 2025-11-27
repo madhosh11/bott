@@ -62,6 +62,13 @@ function createBotOverlay(botId, botName) {
   `
 
   document.getElementById("botOverlays").appendChild(overlay)
+
+  const frame = document.getElementById(`frame-${botId}`)
+  if (chromeInstances[botId] && chromeInstances[botId].url) {
+    frame.src = chromeInstances[botId].url
+  } else {
+    console.log("[v0] No Chrome instance URL found for", botId)
+  }
 }
 
 function refreshBot(botId) {
