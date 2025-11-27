@@ -1,5 +1,8 @@
 let bots = []
 const closedBots = []
+let draggedBot = null
+const dragOffset = { x: 0, y: 0 }
+const GRID_SIZE = 20 // Grid snapping size
 
 // DOM Elements
 const launchDialog = document.getElementById("launchDialog")
@@ -41,8 +44,10 @@ function renderBotOverlays() {
 
   const CONTROL_BAR_HEIGHT = 80
   const CONTAINER_PADDING = 16
-  const TAB_SPACING = 12
+  const TAB_SPACING = 8
   const HEADER_HEIGHT = 36
+  const GRID_COLS = 4
+  const GRID_ROWS = 3
 
   const windowWidth = window.innerWidth
   const windowHeight = window.innerHeight
@@ -50,31 +55,29 @@ function renderBotOverlays() {
   const availableWidth = windowWidth - CONTAINER_PADDING * 2
   const availableHeight = windowHeight - CONTROL_BAR_HEIGHT - CONTAINER_PADDING * 2
 
-  const cols = Math.ceil(Math.sqrt(bots.length))
-  const rows = Math.ceil(bots.length / cols)
-
-  const cellWidth = (availableWidth + TAB_SPACING) / cols
-  const cellHeight = (availableHeight + TAB_SPACING) / rows
+  const cellWidth = availableWidth / GRID_COLS
+  const cellHeight = availableHeight / GRID_ROWS
 
   const tabWidth = cellWidth - TAB_SPACING
   const tabHeight = cellHeight - TAB_SPACING - HEADER_HEIGHT
 
   bots.forEach((bot, index) => {
-    const col = index % cols
-    const row = Math.floor(index / cols)
+    const col = index % GRID_COLS
+    const row = Math.floor(index / GRID_COLS)
 
     const overlay = document.createElement("div")
     overlay.className = "bot-overlay"
     overlay.id = `overlay-${bot.id}`
-
-    const headerTop = Math.round(CONTROL_BAR_HEIGHT + CONTAINER_PADDING + row * cellHeight)
-    const viewTop = headerTop + HEADER_HEIGHT
-
+    overlay.dataset.botId = bot.id
+    overlay.dataset.gridCol = col
+    overlay.dataset.gridRow = row
+    overlay.dataset.draggable = true
     overlay.style.left = `${Math.round(CONTAINER_PADDING + col * cellWidth)}px`
-    overlay.style.top = `${headerTop}px`
+    overlay.style.top = `${Math.round(CONTROL_BAR_HEIGHT + CONTAINER_PADDING + row * cellHeight)}px`
     overlay.style.width = `${Math.round(tabWidth)}px`
     overlay.style.height = `${HEADER_HEIGHT}px`
     overlay.style.pointerEvents = "auto"
+    overlay.style.transition = "all 0.2s ease-out"
 
     overlay.innerHTML = `
       <div class="bot-overlay-header">
@@ -88,8 +91,75 @@ function renderBotOverlays() {
       </div>
     `
 
+    overlay.addEventListener("mousedown", startDrag)
+
     botOverlays.appendChild(overlay)
   })
+}
+
+function startDrag(e) {
+  if (e.target.closest(".bot-action-btn")) return
+
+  draggedBot = this
+  draggedBot.style.transition = "none"
+  draggedBot.style.zIndex = "100"
+
+  const rect = draggedBot.getBoundingClientRect()
+  dragOffset.x = e.clientX - rect.left
+  dragOffset.y = e.clientY - rect.top
+
+  document.addEventListener("mousemove", drag)
+  document.addEventListener("mouseup", stopDrag)
+}
+
+function drag(e) {
+  if (!draggedBot) return
+
+  let newX = e.clientX - dragOffset.x
+  let newY = e.clientY - dragOffset.y
+
+  const CONTAINER_PADDING = 16
+  const CONTROL_BAR_HEIGHT = 80
+
+  newX = Math.max(
+    CONTAINER_PADDING,
+    Math.min(newX, window.innerWidth - CONTAINER_PADDING - Number.parseInt(draggedBot.style.width)),
+  )
+  newY = Math.max(CONTROL_BAR_HEIGHT + CONTAINER_PADDING, Math.min(newY, window.innerHeight - CONTAINER_PADDING - 36))
+
+  draggedBot.style.left = newX + "px"
+  draggedBot.style.top = newY + "px"
+  draggedBot.style.opacity = "0.8"
+}
+
+function stopDrag() {
+  if (!draggedBot) return
+
+  const CONTAINER_PADDING = 16
+  const CONTROL_BAR_HEIGHT = 80
+  const TAB_SPACING = 8
+  const GRID_COLS = 4
+  const availableWidth = window.innerWidth - CONTAINER_PADDING * 2
+  const cellWidth = availableWidth / GRID_COLS
+
+  const currentLeft = Number.parseInt(draggedBot.style.left)
+  const currentTop = Number.parseInt(draggedBot.style.top)
+
+  const gridX = Math.round((currentLeft - CONTAINER_PADDING) / GRID_SIZE) * GRID_SIZE + CONTAINER_PADDING
+  const gridY =
+    Math.round((currentTop - CONTROL_BAR_HEIGHT - CONTAINER_PADDING) / GRID_SIZE) * GRID_SIZE +
+    CONTROL_BAR_HEIGHT +
+    CONTAINER_PADDING
+
+  draggedBot.style.left = gridX + "px"
+  draggedBot.style.top = gridY + "px"
+  draggedBot.style.opacity = "1"
+  draggedBot.style.zIndex = "10"
+  draggedBot.style.transition = "all 0.2s ease-out"
+
+  document.removeEventListener("mousemove", drag)
+  document.removeEventListener("mouseup", stopDrag)
+  draggedBot = null
 }
 
 // Bot control functions

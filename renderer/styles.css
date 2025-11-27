@@ -186,26 +186,34 @@ body {
 .bot-overlay {
   position: absolute;
   pointer-events: none;
-  /* Removed red border - tabs now position with spacing only */
+  /* Removed border, added shadow for depth */
   background: transparent;
+  cursor: grab;
+}
+
+.bot-overlay:active {
+  cursor: grabbing;
 }
 
 .bot-overlay-header {
-  /* Header now positioned relative to overlay, which is placed at the header position */
+  /* Redesigned header with no border, clean shadow */
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   pointer-events: all;
-  background: rgba(10, 10, 10, 0.95);
-  border: 1px solid #333;
-  border-radius: 4px 4px 0 0;
-  padding: 6px 12px;
+  background: rgba(10, 10, 10, 0.98);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 36px;
   z-index: 10;
+  /* Added subtle shadow instead of border */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  user-select: none;
 }
 
 /* Bot Instance */
