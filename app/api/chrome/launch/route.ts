@@ -18,6 +18,11 @@ export async function POST(request: NextRequest) {
         "--disable-dev-shm-usage",
         "--disable-web-security", // For testing purposes
         "--disable-features=IsolateOrigins,site-per-process",
+        "--disable-component-extensions-with-background-pages",
+        "--disable-default-apps",
+        "--disable-extensions",
+        "--disable-preconnect",
+        "--disable-sync",
       ],
     })
 

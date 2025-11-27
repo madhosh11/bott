@@ -16,12 +16,6 @@ interface BotInstanceProps {
 export function BotInstance({ bot }: BotInstanceProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
-  const getBotName = () => {
-    const parts = bot.id.split("-")
-    const index = parts[parts.length - 1]
-    return index === "0" ? "Host 1" : `Bot ${Number.parseInt(index) + 1}`
-  }
-
   if (bot.status === "closed") {
     return (
       <Card className="bg-zinc-900 border-red-900/50 aspect-video relative overflow-hidden">
