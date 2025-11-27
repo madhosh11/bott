@@ -73,7 +73,7 @@
   },
   "build": {
     "appId": "com.madhoshbottool.app",
-    "productName": "Madhosh's Bot Tool",
+    "productName": "Mado",
     "directories": {
       "output": "dist"
     },
