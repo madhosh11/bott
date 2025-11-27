@@ -41,7 +41,7 @@ export function BotInstance({ bot, onClose, onRefresh }: BotInstanceProps) {
 
   return (
     <Card
-      className={`bg-zinc-900 border-red-900/50 overflow-hidden transition-all flex flex-col ${
+      className={`bg-zinc-900 border-red-900/50 transition-all flex flex-col ${
         isFullscreen ? "fixed inset-4 z-50" : "min-h-80"
       }`}
     >
@@ -87,7 +87,7 @@ export function BotInstance({ bot, onClose, onRefresh }: BotInstanceProps) {
       </div>
 
       <div
-        className="relative bg-zinc-950 flex items-center justify-center flex-1 overflow-hidden"
+        className="relative bg-zinc-950 flex items-center justify-center flex-1"
         style={{ minHeight: isFullscreen ? "calc(100vh - 8rem - 48px)" : "300px" }}
       >
         {bot.screenshot ? (
