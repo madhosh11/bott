@@ -197,9 +197,11 @@ export default function ChromeControlPanel() {
       </div>
 
       <div className="flex-1 p-6 overflow-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {bots.map((bot) => (
-            <BotInstance key={bot.id} bot={bot} onClose={() => closeBot(bot.id)} onRefresh={() => refreshBot(bot.id)} />
+            <div key={bot.id} className="relative">
+              <BotInstance bot={bot} />
+            </div>
           ))}
         </div>
       </div>
